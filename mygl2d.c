@@ -37,6 +37,31 @@ void fillRect(int x, int y, int w, int h) {
   glEnd();
 }
 
+void drawCircle(int cx, int cy, int r) {
+  glBegin(GL_LINE_LOOP);
+  int num_segs = 100;
+  for (int i = 0; i < num_segs; ++i) {
+    float theta = 2.0f * 3.1415926f * (float)(i) / (float)(num_segs);
+    int x = (int)(round(cx + r * cos(theta)));
+    int y = (int)(round(cy + r * sin(theta)));
+    glVertex2i(x, y);
+  }
+  glEnd();
+}
+
+void fillCircle(int cx, int cy, int r) {
+  glBegin(GL_TRIANGLE_FAN);
+  glVertex2i(cx, cy);  // Center of the circle
+  int num_segs = 100;  // Number of segments for smoothness
+  for (int i = 0; i <= num_segs; ++i) {
+    float theta = 2.0f * 3.1415926f * (float)(i) / (float)(num_segs);
+    int x = (int)(round(cx + r * cos(theta)));
+    int y = (int)(round(cy + r * sin(theta)));
+    glVertex2i(x, y);
+  }
+  glEnd();
+}
+
 void drawOval(int cx, int cy, int rx, int ry) {
   glBegin(GL_LINE_LOOP);
   int num_segs = 100;
