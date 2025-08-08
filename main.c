@@ -1,7 +1,8 @@
+#include <stdbool.h>
+
 #include "glfw.h"
 #include "mygl2d.h"
-
-#include <stdbool.h>
+#include "mouse.h"
 
 #define GAME_TITLE "mygl2d"
 
@@ -11,6 +12,16 @@
 #define clamp(val,min,max) ((val)<(min)?(min):((val)>(max)?(max):(val)))
 
 bool quit=false;
+
+Mouse *mouse=NULL;
+
+bool inrect(int x,int y,int rx,int ry,int w,int h) {
+	return x>=rx && x<=rx+w && y>=ry && y<=ry+h;
+}
+
+bool incirc(int x,int y,int cx,int cy,int cr) {
+	return (cx-x)*(cx-x) + (cy-y)*(cy-y) < cr*cr;
+}
 
 void rotatePoint(float cx, float cy, float angleInRads,float *x,float *y) {
     float s = sin(angleInRads);
@@ -39,7 +50,7 @@ float clampRadians(float angle) {
 }
 
 void update() {
-	glfwPollEvents();
+	Mouse_Update(mouse);
 }
 
 void draw() {
@@ -48,7 +59,11 @@ void draw() {
 
 	clearScreen();
 
-	drawCircle(SCREEN_WIDTH/2,SCREEN_HEIGHT/2,32);
+	if(mouse->isLeftButtonDown && incirc(mouse->x,mouse->y,SCREEN_WIDTH/2,SCREEN_HEIGHT/2,32)) {
+		fillCircle(SCREEN_WIDTH/2,SCREEN_HEIGHT/2,32);
+	} else {
+		drawCircle(SCREEN_WIDTH/2,SCREEN_HEIGHT/2,32);
+	}
 
 	glFlush();
 	glfwSwapBuffers();
@@ -61,10 +76,17 @@ int main(int argc, char** argv) {
 	glfwOpenWindow(SCREEN_WIDTH,SCREEN_HEIGHT,0, 0, 0, 0, 0, 0,GLFW_WINDOW);
 	glfwSetWindowTitle(GAME_TITLE);
 
+	mouse=Mouse_New();
+
 	while(!quit) {
 		update();
 		draw();
+
 		quit = glfwGetKey(GLFW_KEY_ESC) | !glfwGetWindowParam(GLFW_OPENED);
 	}
-}
 
+
+	Mouse_Free(&mouse);
+
+	return 0;
+}
