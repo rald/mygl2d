@@ -1,8 +1,12 @@
 #include <stdbool.h>
 
+#include "miniaudio.h"
 #include "glfw.h"
+
 #include "mygl2d.h"
 #include "mouse.h"
+
+
 
 #define GAME_TITLE "mygl2d"
 
@@ -13,7 +17,15 @@
 
 bool quit=false;
 
+ma_result result;
+ma_engine engine;
+
 Mouse *mouse=NULL;
+
+bool hold=false;
+
+
+
 
 bool inrect(int x,int y,int rx,int ry,int w,int h) {
 	return x>=rx && x<=rx+w && y>=ry && y<=ry+h;
@@ -61,8 +73,13 @@ void draw() {
 
 	if(mouse->isLeftButtonDown && incirc(mouse->x,mouse->y,SCREEN_WIDTH/2,SCREEN_HEIGHT/2,32)) {
 		fillCircle(SCREEN_WIDTH/2,SCREEN_HEIGHT/2,32);
+		if(!hold) {
+			ma_engine_play_sound(&engine, "beep.mp3", NULL);
+			hold=true;
+		}
 	} else {
 		drawCircle(SCREEN_WIDTH/2,SCREEN_HEIGHT/2,32);
+		hold=false;
 	}
 
 	glFlush();
@@ -78,6 +95,11 @@ int main(int argc, char** argv) {
 
 	mouse=Mouse_New();
 
+    result = ma_engine_init(NULL, &engine);
+    if (result != MA_SUCCESS) {
+        return -1;
+    }
+
 	while(!quit) {
 		update();
 		draw();
@@ -85,6 +107,8 @@ int main(int argc, char** argv) {
 		quit = glfwGetKey(GLFW_KEY_ESC) | !glfwGetWindowParam(GLFW_OPENED);
 	}
 
+
+	ma_engine_uninit(&engine);
 
 	Mouse_Free(&mouse);
 
