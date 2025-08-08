@@ -24,9 +24,6 @@ Mouse *mouse=NULL;
 
 bool hold=false;
 
-
-
-
 bool inrect(int x,int y,int rx,int ry,int w,int h) {
 	return x>=rx && x<=rx+w && y>=ry && y<=ry+h;
 }
@@ -106,7 +103,6 @@ int main(int argc, char** argv) {
 
 		quit = glfwGetKey(GLFW_KEY_ESC) | !glfwGetWindowParam(GLFW_OPENED);
 	}
-
 
 	ma_engine_uninit(&engine);
 
