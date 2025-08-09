@@ -117,14 +117,6 @@ int main(int argc, char** argv) {
 
 	spinAnim=(Animation){frames,4,0,1.0f,0.0f};
 
-/*
-	spinAnim.frames=frames;
-	spinAnim.frameCount=4;
-	spinAnim.currentFrame=0;
-	spinAnim.frameDuration=0.1f;
-	spinAnim.elapsedTime=0.0f;
-*/
-
     result = ma_engine_init(NULL, &engine);
     if (result != MA_SUCCESS) {
         return -1;
@@ -132,13 +124,12 @@ int main(int argc, char** argv) {
 
 	double lastTime=0;
 	while(!quit) {
-	
-		double currentTime = glfwGetTime();
-		double deltaTime = currentTime - lastTime;
-		lastTime = currentTime;	
-		
+		double currentTime=glfwGetTime();
+		double deltaTime=currentTime-lastTime;
+		lastTime=currentTime;
+
 		update(deltaTime);
-		
+
 		draw();
 
 		quit = glfwGetKey(GLFW_KEY_ESC) | !glfwGetWindowParam(GLFW_OPENED);
